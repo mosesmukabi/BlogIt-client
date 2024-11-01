@@ -1,28 +1,55 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import apiBase from '../../utils/apiBase';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async ({ username, password }) => {
+      const response = await fetch(`${apiBase}/auth/login`, {
+        method: 'POST',
+        body: JSON.stringify({ userName: username, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success('Login successful!');
+      setTimeout(() => {
+        navigate('/');
+      }, 500); // Adjust the delay as needed
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validation for empty fields
     if (!formData.username || !formData.password) {
       setError('Both username and password are required.');
       return;
     }
-
-    // Clear error and proceed
     setError('');
-    console.log('Login successful with data:', formData);
+    mutate(formData); // Pass formData directly
   };
 
   return (
@@ -30,7 +57,6 @@ const LoginPage = () => {
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-        {/* Error message */}
         {error && (
           <div className="mb-4 p-3 text-white bg-red-500 rounded">
             {error}
@@ -62,11 +88,13 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300 disabled:bg-slate-500"
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Loading...' : 'Login'}
           </button>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
