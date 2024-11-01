@@ -35,7 +35,7 @@ const LoginPage = () => {
       toast.success('Login successful!');
       setTimeout(() => {
         navigate('/');
-      }, 500); // Adjust the delay as needed
+      }, 500); 
     },
     onError: (error) => {
       toast.error(error.message);

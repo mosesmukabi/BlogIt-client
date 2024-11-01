@@ -37,7 +37,9 @@ const SignupPage = () => {
     },
     onSuccess: () => {
       toast.success('Registration successfully!');
-      navigate('/login'); // Redirect to login on success
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     },
     onError: (error) => {
       toast.error(`${error.message}`);
