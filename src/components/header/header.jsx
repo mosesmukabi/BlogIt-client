@@ -1,28 +1,31 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const navigate = useNavigate(); // Define navigate using useNavigate
+  const navigate = useNavigate(); // Initialize useNavigate
 
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-gray-100 shadow-md">
       {/* Logo */}
-      <div className="text-2xl font-bold text-gray-800">BlogIt</div>
+      <div className="text-2xl font-bold text-gray-800">
+        <Link to="/">BlogIt</Link> {/* Using Link for the logo */}
+      </div>
       
       {/* Navigation Links */}
       <nav className="flex space-x-4 items-center">
-        <a href="/" className="text-lg text-gray-700 hover:text-gray-900">Home</a>
-        
+        {/* Use Link instead of anchor tags */}
+        <Link to="/" className="text-lg text-gray-700 hover:text-gray-900">Home</Link>
+
         {/* Buttons */}
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-          onClick={() => navigate('/signup')} // Use navigate here
+          onClick={() => navigate('/signup')}
         >
           Sign Up
         </button>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-          onClick={() => navigate('/login')} // Add navigate for Login as well
+          onClick={() => navigate('/login')}
         >
           Login
         </button>

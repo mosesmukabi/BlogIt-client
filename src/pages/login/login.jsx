@@ -4,11 +4,13 @@ import { useMutation } from 'react-query';
 import apiBase from '../../utils/apiBase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../../utils/AuthContext'; 
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { dispatch } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,9 +35,10 @@ const LoginPage = () => {
     },
     onSuccess: () => {
       toast.success('Login successful!');
+      dispatch({ type: 'LOGIN' }); 
       setTimeout(() => {
-        navigate('/');
-      }, 500); 
+        navigate('/feeds');
+      }, 1000); 
     },
     onError: (error) => {
       toast.error(error.message);
@@ -49,7 +52,7 @@ const LoginPage = () => {
       return;
     }
     setError('');
-    mutate(formData); // Pass formData directly
+    mutate(formData);
   };
 
   return (
@@ -94,7 +97,7 @@ const LoginPage = () => {
             {isLoading ? 'Loading...' : 'Login'}
           </button>
         </form>
-        <ToastContainer />
+        <ToastContainer autoClose={3000} />
       </div>
     </div>
   );

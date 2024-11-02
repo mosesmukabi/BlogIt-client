@@ -17,7 +17,7 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Define the mutation with onSuccess and onError handlers
+  
   const { mutate, isLoading } = useMutation({
     mutationFn: async (newUser) => {
       const response = await fetch(`${apiBase}/users`, {
