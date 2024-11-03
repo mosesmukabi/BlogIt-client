@@ -12,6 +12,8 @@ import Feeds from './pages/feeds/feeds';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './utils/AuthContext';
+import WritePage from './pages/write/write';
+
 
 const client = new QueryClient();
 
@@ -26,7 +28,8 @@ function AppContent() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/feeds" element={<Feeds />} />
+        <Route path="/feeds/:id" element={<Feeds />} />
+        <Route path="/write" element={<WritePage />} />
       </Routes>
       
       <Footer />
