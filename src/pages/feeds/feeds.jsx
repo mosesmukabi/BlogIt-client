@@ -1,49 +1,48 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import apiBase from '../../utils/apiBase'; // Ensure apiBase points to your server
 
 const BlogListing = () => {
-  const blogs = [
-    {
-      id: 1,
-      title: 'The Beauty of the JavaScript Ecosystem',
-      excerpt: 'Discover the vibrant and versatile JavaScript ecosystem...',
-      featuredImage: 'https://via.placeholder.com/150',
-      author: { name: 'John Doe', avatar: 'https://via.placeholder.com/40' },
-      date: 'Oct 28, 2024',
-    },
-    {
-      id: 2,
-      title: 'Why React is Taking Over Frontend Development',
-      excerpt: 'Explore the key reasons why React has become so popular...',
-      featuredImage: 'https://via.placeholder.com/150',
-      author: { name: 'Jane Smith', avatar: '' },
-      date: 'Oct 29, 2024',
-    },
-    {
-      id: 3,
-      title: 'Understanding Async and Await in JavaScript',
-      excerpt: 'Async and await make JavaScript asynchronous programming...',
-      featuredImage: 'https://via.placeholder.com/150',
-      author: { name: 'Alice Johnson', avatar: 'https://via.placeholder.com/40' },
-      date: 'Oct 30, 2024',
-    },
-  ];
+  // Fetching blogs from the backend using react-query
+  const { isLoading, isError, error, data: blogs } = useQuery('fetchBlogs', async () => {
+    const response = await fetch(`${apiBase}/blogs`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch blogs');
+    }
+
+    const blogsData = await response.json();
+    return blogsData;
+  });
+
+  if (isLoading) {
+    return <h2 className="text-center text-3xl mt-5">Loading...</h2>;
+  }
+
+  if (isError) {
+    return <h2 className="text-center text-3xl mt-5">{error.message}</h2>;
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       <div className="max-w-5xl mx-auto">
         {blogs.map((blog) => (
           <div key={blog.id} className="bg-white shadow-lg rounded-lg p-4 mb-6">
-            <img src={blog.featuredImage} alt="Featured" className="w-full h-48 object-cover rounded-lg" />
+            <img src={blog.featuredImage || 'https://via.placeholder.com/150'} alt="Featured" className="w-full h-48 object-cover rounded-lg" />
             <div className="flex items-center mt-4">
               <img
-                src={blog.author.avatar || 'https://via.placeholder.com/40'}
+                src={blog.user.avatar || 'https://via.placeholder.com/40'}
                 alt="Author"
                 className="w-10 h-10 rounded-full mr-3"
               />
               <div>
                 <h3 className="text-lg font-semibold">{blog.title}</h3>
-                <p className="text-gray-500 text-sm">By {blog.author.name} • {blog.date}</p>
+                <p className="text-gray-500 text-sm">By {blog.user.firstName} {blog.user.lastName} </p>
+                <p className="text-gray-500 text-sm">Posted on {new Date(blog.createdAt).toDateString()}</p>
               </div>
             </div>
             <p className="text-gray-700 mt-4">{blog.excerpt}</p>
