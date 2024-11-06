@@ -14,6 +14,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './utils/AuthContext';
 import WritePage from './pages/write/write';
 import FullBlog from './pages/FullBlog/FullBlog';
+import MyBlogs from './pages/myBlogs/myBlogs';
+
 
 
 const client = new QueryClient();
@@ -32,6 +34,7 @@ function AppContent() {
         <Route path="/feeds" element={<Feeds />} />
         <Route path="/write" element={<WritePage />} />
         <Route path="/blog/:id" element={<FullBlog />} />
+        <Route path="/myblogs" element={<MyBlogs />} />
       </Routes>
       
       <Footer />
