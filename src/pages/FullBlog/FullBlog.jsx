@@ -3,30 +3,6 @@ import { useParams } from 'react-router-dom';
 import apiBase from '../../utils/apiBase';
 import { useQuery } from 'react-query';
 
-// const FullBlog = () => {
-//   const { id } = useParams(); // Get the ID from the URL
-//   const [postId, setPostId] = useState(null); // State to hold the post ID
-//   const [error, setError] = useState(null); // State for any potential error
-
-//   useEffect(() => {
-//     // Simulate fetching the ID from an API by directly setting it in the state
-//     if (id) {
-//       setPostId(id); // Set the ID in the state
-//     } else {
-//       setError('Failed to retrieve blog post ID.');
-//     }
-//   }, [id]);
-
-//   return (
-//     <div className="full-blog">
-//       {error ? ( // Display an error message if there was an issue
-//         <p style={{ color: 'red' }}>{error}</p>
-//       ) : (
-//         <p>Your blog post ID is {postId}</p> // Display the ID
-//       )}
-//     </div>
-//   );
-// };
 function FullBlog() {
   const { id } = useParams(); // Get the ID from the URL
   const {isLoading, isError, error, data} =useQuery({

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Editor } from 'primereact/editor';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -10,42 +10,54 @@ import 'react-toastify/dist/ReactToastify.css';
 import apiBase from '../../utils/apiBase';
 import Input from '../../utils/Input';
 
-const WritePage = () => {
+const EditPage = () => {
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [body, setBody] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
   const navigate = useNavigate();
+  const { id: blogId } = useParams(); // Capture blog ID from URL
+  console.log("Blog ID from params:", blogId); // Debugging log
 
+  // Fetch blog details based on blogId and populate form fields
+  useQuery(['updateBlog', blogId], async () => {
+    const response = await fetch(`${apiBase}/blogs/${blogId}`, { credentials: 'include' });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+    const data = await response.json();
+    setTitle(data.title);
+    setExcerpt(data.excerpt);
+    setBody(data.body);
+    setFeaturedImage(data.featuredImage);
+    return data;
+  }, {
+    enabled: !!blogId, // Only run query if blogId is defined
+  });
+
+  // Mutation for updating the blog
   const { mutate, isLoading } = useMutation({
     mutationFn: async (blog) => {
-      const response = await fetch(`${apiBase}/blogs`, {
-        method: 'POST',
+      const response = await fetch(`${apiBase}/blogs/${blogId}`, {
+        method: 'PUT',
         body: JSON.stringify(blog),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message);
       }
-
-      const data = await response.json();
-      return data;
+      return response.json();
     },
     onSuccess: (data) => {
-      navigate(`/blog/${data.id}`);
-      toast.success('Blog created successfully', {
-        duration: 3000,
-      });
+      console.log("Navigating to:", `/blog/edited/${blogId}`);
+      navigate(`/blog/edited/${blogId}`);
+      toast.success('Blog updated successfully', { autoClose: 3000 });
     },
     onError: (error) => {
-      toast.error(error.message, {
-        duration: 3000,
-      });
+      toast.error(error.message, { autoClose: 3000 });
     },
   });
 
@@ -55,27 +67,13 @@ const WritePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!title || !excerpt || !body || !featuredImage) {
-        toast.error('Please fill in all required fields.');
-        return;
-    }
-
-    console.log("Featured Image URL:", featuredImage); // Check if URL is valid here
-
-    const blog = {
-        title,
-        excerpt,
-        body,
-        featuredImage,
-    };
-
-    mutate(blog);
-};
+    const updatedBlog = { title, excerpt, body, featuredImage };
+    mutate(updatedBlog); // Trigger the mutation with updated blog data
+  };
 
   return (
     <div className="container mx-auto my-8 p-4">
-      <h1 className="text-3xl font-bold mb-4">Create a New Post</h1>
+      <h1 className="text-3xl font-bold mb-4">Update Blog</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block font-medium">Featured Image</label>
@@ -92,7 +90,6 @@ const WritePage = () => {
             className="w-full p-2 border rounded"
             required
           />
-          <p className="text-gray-500 text-sm">Character count: {title.length}</p>
         </div>
 
         <div className="mb-4">
@@ -104,7 +101,6 @@ const WritePage = () => {
             className="w-full p-2 border rounded"
             required
           />
-          <p className="text-gray-500 text-sm">Character count: {excerpt.length}</p>
         </div>
 
         <div className="mb-4">
@@ -121,7 +117,7 @@ const WritePage = () => {
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:bg-slate-400"
           disabled={isLoading}
         >
-          {isLoading ? 'Submitting...' : 'post blog'}
+          {isLoading ? 'Updating...' : 'Update Blog'}
         </button>
       </form>
       <ToastContainer autoClose={3000} />
@@ -129,4 +125,4 @@ const WritePage = () => {
   );
 };
 
-export default WritePage;
+export default EditPage;

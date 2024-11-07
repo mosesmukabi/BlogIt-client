@@ -15,6 +15,8 @@ import { AuthProvider, useAuth } from './utils/AuthContext';
 import WritePage from './pages/write/write';
 import FullBlog from './pages/FullBlog/FullBlog';
 import MyBlogs from './pages/myBlogs/myBlogs';
+import EditPage from './pages/Edit/Edit';
+import EditedFullBlog from './pages/EditedFullBlog/EditedFullBlog';
 
 
 
@@ -35,6 +37,8 @@ function AppContent() {
         <Route path="/write" element={<WritePage />} />
         <Route path="/blog/:id" element={<FullBlog />} />
         <Route path="/myblogs" element={<MyBlogs />} />
+        <Route path="/editBlog/:id" element={<EditPage />} />
+        <Route path="/blog/edited/:id" element={<EditedFullBlog />} />
       </Routes>
       
       <Footer />

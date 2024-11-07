@@ -2,6 +2,8 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import apiBase from '../../utils/apiBase';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyBlogs = () => {
   const queryClient = useQueryClient();
@@ -34,22 +36,32 @@ const MyBlogs = () => {
         const errorData = await response.json();
         throw new Error(errorData.message);
       }
+      const data = await response.json();
+      return data;
     },
     {
       onSuccess: () => {
+        toast.success('Blog deleted successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
         queryClient.invalidateQueries('fetchUserBlogs');
+      },
+      onError: (error) => {
+        toast.error(error.message, {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       },
     }
   );
 
   const handleDelete = (blogId) => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      deleteMutation.mutate(blogId);
-    }
+    deleteMutation.mutate(blogId);
   };
 
   const handleUpdate = (blogId) => {
-    navigate(`/edit-blog/${blogId}`);
+    navigate(`/editBlog/${blogId}`); // Adjusted to match the new route
   };
 
   if (isLoading) {
@@ -100,15 +112,19 @@ const MyBlogs = () => {
                 </button>
                 <button
                   onClick={() => handleDelete(blog.id)}
-                  className="bg-blue-200 text-blue-700 py-1 px-4 rounded w-full ml-2 hover:bg-blue-300"
+                  className={`bg-blue-200 text-blue-700 py-1 px-4 rounded w-full ml-2 hover:bg-blue-300 ${
+                    deleteMutation.isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={deleteMutation.isLoading}
                 >
-                  Delete
+                  {deleteMutation.isLoading ? 'Deleting...' : 'Delete'}
                 </button>
               </div>
             </div>
           ))
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
