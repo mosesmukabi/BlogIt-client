@@ -17,7 +17,7 @@ import FullBlog from './pages/FullBlog/FullBlog';
 import MyBlogs from './pages/myBlogs/myBlogs';
 import EditPage from './pages/Edit/Edit';
 import EditedFullBlog from './pages/EditedFullBlog/EditedFullBlog';
-
+import UpdateProfile from './pages/updatePersonalInfo/updatePersonalInfo';
 
 
 const client = new QueryClient();
@@ -39,6 +39,7 @@ function AppContent() {
         <Route path="/myblogs" element={<MyBlogs />} />
         <Route path="/editBlog/:id" element={<EditPage />} />
         <Route path="/blog/edited/:id" element={<EditedFullBlog />} />
+        <Route path="/updateProfile" element={<UpdateProfile />} />
       </Routes>
       
       <Footer />
