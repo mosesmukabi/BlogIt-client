@@ -1,31 +1,30 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useMutation } from 'react-query';
-import apiBase from '../../utils/apiBase';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import apiBase from "../../utils/apiBase";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  
   const { mutate, isLoading } = useMutation({
     mutationFn: async (newUser) => {
       const response = await fetch(`${apiBase}/users`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(newUser),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {
@@ -36,14 +35,14 @@ const SignupPage = () => {
       return await response.json();
     },
     onSuccess: () => {
-      toast.success('Registration successfully!');
+      toast.success("Registration successfully!");
       setTimeout(() => {
-        navigate('/login');
+        navigate("/login");
       }, 1000);
     },
     onError: (error) => {
       toast.error(`${error.message}`);
-    }
+    },
   });
 
   // Handle form input changes
@@ -55,30 +54,38 @@ const SignupPage = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, username, password, confirmPassword } = formData;
+    const { firstName, lastName, email, username, password, confirmPassword } =
+      formData;
 
-    if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
-      setError('All fields are required.');
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !username ||
+      !password ||
+      !confirmPassword
+    ) {
+      setError("All fields are required.");
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
-    setError('');
+    setError("");
     mutate(formData); // Trigger mutation to create the user
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create an Account</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Create an Account
+        </h2>
 
         {error && (
-          <div className="mb-4 p-3 text-white bg-red-500 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-3 text-white bg-red-500 rounded">{error}</div>
         )}
 
         <form onSubmit={handleSubmit}>
@@ -152,12 +159,15 @@ const SignupPage = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
           >
-            {isLoading ? 'Loading...' : 'Sign Up'}
+            {isLoading ? "Loading..." : "Sign Up"}
           </button>
         </form>
 
         <p className="mt-4 text-center">
-          Already have an account? <Link to="/login" className="text-blue-500">Log in</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500">
+            Log in
+          </Link>
         </p>
       </div>
       <ToastContainer />

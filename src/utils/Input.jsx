@@ -24,7 +24,11 @@ function Input({ onImageUpload }) {
     <div>
       <input type="file" onChange={(e) => uploadImage(e.target.files)} />
       {image && (
-        <img src={image} alt="Uploaded" style={{ maxWidth: "100px", marginTop: "10px" }} />
+        <img
+          src={image}
+          alt="Uploaded"
+          style={{ maxWidth: "100px", marginTop: "10px" }}
+        />
       )}
     </div>
   );

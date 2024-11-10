@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from 'react-query';
-import apiBase from '../../utils/apiBase';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../../utils/AuthContext'; 
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import apiBase from "../../utils/apiBase";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../../utils/AuthContext";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { dispatch } = useAuth();
 
@@ -20,38 +20,38 @@ const LoginPage = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: async ({ username, password }) => {
       const response = await fetch(`${apiBase}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ userName: username, password }),
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
       return response.json();
     },
     onSuccess: () => {
-      toast.success('Login successful!');
-      dispatch({ type: 'LOGIN' }); 
+      toast.success("Login successful!");
+      dispatch({ type: "LOGIN" });
       setTimeout(() => {
-        navigate('/feeds');
-      }, 1000); 
+        navigate("/feeds");
+      }, 1000);
     },
     onError: (error) => {
       toast.error(error.message);
-    }
+    },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.username || !formData.password) {
-      setError('Both username and password are required.');
+      setError("Both username and password are required.");
       return;
     }
-    setError('');
+    setError("");
     mutate(formData);
   };
 
@@ -61,9 +61,7 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         {error && (
-          <div className="mb-4 p-3 text-white bg-red-500 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-3 text-white bg-red-500 rounded">{error}</div>
         )}
 
         <form onSubmit={handleSubmit}>
@@ -94,7 +92,7 @@ const LoginPage = () => {
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300 disabled:bg-slate-500"
             disabled={isLoading}
           >
-            {isLoading ? 'Loading...' : 'Login'}
+            {isLoading ? "Loading..." : "Login"}
           </button>
         </form>
         <ToastContainer autoClose={3000} />

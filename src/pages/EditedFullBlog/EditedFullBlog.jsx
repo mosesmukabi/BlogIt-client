@@ -1,17 +1,17 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import apiBase from '../../utils/apiBase';
-import { useQuery } from 'react-query';
+import React from "react";
+import { useParams } from "react-router-dom";
+import apiBase from "../../utils/apiBase";
+import { useQuery } from "react-query";
 
 function EditedFullBlog() {
   const { id: blogId } = useParams(); // Capture blog ID from URL
   console.log("Blog ID from params:", blogId); // Debugging log to ensure we have the blog ID
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: ['blog', blogId],
+    queryKey: ["blog", blogId],
     queryFn: async () => {
       const response = await fetch(`${apiBase}/blogs/${blogId}`, {
-        credentials: 'include',
+        credentials: "include",
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -44,8 +44,16 @@ function EditedFullBlog() {
         <p>No featured image available</p>
       )}
       <div className="text-center mb-5">
-        <p>Last updated: {data.updatedAt ? new Date(data.updatedAt).toDateString() : "Date unavailable"}</p>
-        <p>By {data.user?.firstName || "Unknown"} {data.user?.lastName || "Author"}</p>
+        <p>
+          Last updated:{" "}
+          {data.updatedAt
+            ? new Date(data.updatedAt).toDateString()
+            : "Date unavailable"}
+        </p>
+        <p>
+          By {data.user?.firstName || "Unknown"}{" "}
+          {data.user?.lastName || "Author"}
+        </p>
       </div>
       <h2 className="text-5xl font-bold text-gray-800 mt-4 mb-4 text-center">
         {data.title || "Title not available"}
@@ -55,7 +63,9 @@ function EditedFullBlog() {
       </p>
       <div
         className="prose lg:prose-2xl text-gray-700 leading-relaxed mt-4 text-center"
-        dangerouslySetInnerHTML={{ __html: data.body || "<p>No content available</p>" }}
+        dangerouslySetInnerHTML={{
+          __html: data.body || "<p>No content available</p>",
+        }}
       />
     </div>
   );

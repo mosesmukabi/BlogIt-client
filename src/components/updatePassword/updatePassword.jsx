@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import { useMutation } from 'react-query';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import apiBase from '../../utils/apiBase';
+import React, { useState } from "react";
+import { useMutation } from "react-query";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import apiBase from "../../utils/apiBase";
 
 function UpdatePassword() {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { mutate, isLoading } = useMutation({
     mutationFn: async (passwords) => {
       const response = await fetch(`${apiBase}/auth/password`, {
-        method: 'PATCH',
+        method: "PATCH",
         body: JSON.stringify(passwords),
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to update password');
+        throw new Error(error.message || "Failed to update password");
       }
 
       return response.json();
     },
     onSuccess: () => {
-      toast.success('Password updated successfully!');
+      toast.success("Password updated successfully!");
       // Clear the form fields after a successful update
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     },
     onError: (error) => {
       toast.error(error.message);
-    }
+    },
   });
 
   const handleUpdatePassword = (e) => {
@@ -53,8 +53,10 @@ function UpdatePassword() {
 
   return (
     <div className="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
-      <h2 className="text-2xl font-semibold text-center mb-6">Update Password</h2>
-      
+      <h2 className="text-2xl font-semibold text-center mb-6">
+        Update Password
+      </h2>
+
       <form onSubmit={handleUpdatePassword} className="space-y-4">
         <div className="flex flex-col">
           <label className="text-gray-600">Old Password</label>

@@ -1,18 +1,23 @@
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import apiBase from '../../utils/apiBase';
-import { Link, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import apiBase from "../../utils/apiBase";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MyBlogs = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // Fetch only the blogs created by the logged-in user
-  const { isLoading, isError, error, data: blogs } = useQuery('fetchUserBlogs', async () => {
+  const {
+    isLoading,
+    isError,
+    error,
+    data: blogs,
+  } = useQuery("fetchUserBlogs", async () => {
     const response = await fetch(`${apiBase}/blogs/user`, {
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -28,8 +33,8 @@ const MyBlogs = () => {
   const deleteMutation = useMutation(
     async (blogId) => {
       const response = await fetch(`${apiBase}/blogs/${blogId}`, {
-        method: 'DELETE',
-        credentials: 'include',
+        method: "DELETE",
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -41,19 +46,19 @@ const MyBlogs = () => {
     },
     {
       onSuccess: () => {
-        toast.success('Blog deleted successfully', {
-          position: 'top-right',
+        toast.success("Blog deleted successfully", {
+          position: "top-right",
           autoClose: 3000,
         });
-        queryClient.invalidateQueries('fetchUserBlogs');
+        queryClient.invalidateQueries("fetchUserBlogs");
       },
       onError: (error) => {
         toast.error(error.message, {
-          position: 'top-right',
+          position: "top-right",
           autoClose: 3000,
         });
       },
-    }
+    },
   );
 
   const handleDelete = (blogId) => {
@@ -77,28 +82,40 @@ const MyBlogs = () => {
       <div className="max-w-5xl mx-auto">
         {blogs.length === 0 ? (
           <h2 className="text-center text-2xl mt-5 text-gray-600">
-            You haven't created any blogs yet.{' '}
+            You haven't created any blogs yet.{" "}
             <Link to="/write" className="text-blue-500 hover:underline">
               Write Now
             </Link>
           </h2>
         ) : (
           blogs.map((blog) => (
-            <div key={blog.id} className="bg-white shadow-lg rounded-lg p-4 mb-6">
-              <img src={blog.featuredImage} alt="Featured" className="w-full h-48 object-cover rounded-lg" />
+            <div
+              key={blog.id}
+              className="bg-white shadow-lg rounded-lg p-4 mb-6"
+            >
+              <img
+                src={blog.featuredImage}
+                alt="Featured"
+                className="w-full h-48 object-cover rounded-lg"
+              />
               <div className="flex items-center mt-4">
                 <img
-                  src={blog.user?.avatar || 'https://via.placeholder.com/40'}
+                  src={blog.user?.avatar || "https://via.placeholder.com/40"}
                   alt="Author"
                   className="w-10 h-10 rounded-full mr-3"
                 />
                 <div>
                   <h3 className="text-lg font-semibold">{blog.title}</h3>
-                  <p className="text-gray-500 text-sm">Created on {new Date(blog.createdAt).toDateString()}</p>
+                  <p className="text-gray-500 text-sm">
+                    Created on {new Date(blog.createdAt).toDateString()}
+                  </p>
                 </div>
               </div>
               <p className="text-gray-700 mt-4">{blog.excerpt}</p>
-              <Link to={`/blog/${blog.id}`} className="text-blue-500 hover:underline mt-4 inline-block">
+              <Link
+                to={`/blog/${blog.id}`}
+                className="text-blue-500 hover:underline mt-4 inline-block"
+              >
                 Read More
               </Link>
 
@@ -113,11 +130,13 @@ const MyBlogs = () => {
                 <button
                   onClick={() => handleDelete(blog.id)}
                   className={`bg-blue-200 text-blue-700 py-1 px-4 rounded w-full ml-2 hover:bg-blue-300 ${
-                    deleteMutation.isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    deleteMutation.isLoading
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
                   }`}
                   disabled={deleteMutation.isLoading}
                 >
-                  {deleteMutation.isLoading ? 'Deleting...' : 'Delete'}
+                  {deleteMutation.isLoading ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>
